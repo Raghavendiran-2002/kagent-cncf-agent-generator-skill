@@ -142,6 +142,8 @@ See [`BLOG.md`](BLOG.md) for the full project write-up including live demo sessi
 
 ## Demo Video
 
-<video src="assets/Hackathon.mp4" controls width="100%"></video>
+[![CNCF Agent Generator Demo](https://img.shields.io/badge/Watch%20Demo-Click%20Here-blue)](assets/cncf-agent-generator-demo.mp4)
+
+> Click the badge above or [download the demo video](assets/cncf-agent-generator-demo.mp4) to watch the skill in action.
 
 ---
