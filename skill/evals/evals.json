@@ -1,0 +1,185 @@
+{
+  "skill_name": "cloud-native-agent-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Generate a kagent agent for Flux CD. Here are the details: cncf_project_url: https://fluxcd.io, github_repo_url: https://github.com/fluxcd/flux2, default_enabled: true",
+      "expected_output": "Complete helm chart package for flux-agent including Chart-template.yaml with ${VERSION}, values.yaml with exactly three top-level keys, templates/agent.yaml with full system message grounded in Flux CRDs (Kustomization, HelmRelease, GitRepository etc.), templates/rbac.yaml for fluxcd.io API group, and Phase 4 integration into helm/kagent/Chart-template.yaml, helm/kagent/values.yaml, and Makefile helm-agents target",
+      "assertions": [
+        {
+          "name": "correct_slug",
+          "description": "Uses slug 'flux' and agent name 'flux-agent'"
+        },
+        {
+          "name": "version_placeholder",
+          "description": "Chart-template.yaml uses literal ${VERSION} not a real semver"
+        },
+        {
+          "name": "rbac_generated",
+          "description": "Generates rbac.yaml since Flux introduces CRDs (kustomize.toolkit.fluxcd.io, helm.toolkit.fluxcd.io, etc.)"
+        },
+        {
+          "name": "real_tool_names_only",
+          "description": "All toolNames are from the kagent-tool-server catalogue — no invented names"
+        },
+        {
+          "name": "makefile_integration",
+          "description": "Phase 4 includes envsubst + helm package lines in helm-agents target with tab indentation"
+        },
+        {
+          "name": "three_builtins_present",
+          "description": "systemMessage includes all three builtin includes: kubernetes-context, tool-usage-best-practices, safety-guardrails"
+        },
+        {
+          "name": "a2a_skills_count",
+          "description": "Agent has 3-5 a2aConfig.skills entries, each with 3-5 examples"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Create a kagent agent for Argo CD. cncf_project_url: https://argo-cd.readthedocs.io, github_repo_url: https://github.com/argoproj/argo-cd, default_enabled: false",
+      "expected_output": "Complete helm chart package for argocd-agent with default_enabled set to false in values.yaml. Should include CRD-based RBAC for argoproj.io API group, system message covering Application sync, AppProject management, rollback, health status. Phase 4 wires into main chart with enabled: false so users must opt-in with --set.",
+      "assertions": [
+        {
+          "name": "default_enabled_false",
+          "description": "helm/kagent/values.yaml shows 'enabled: false' for argocd-agent"
+        },
+        {
+          "name": "correct_api_group_in_rbac",
+          "description": "rbac.yaml targets argoproj.io API group"
+        },
+        {
+          "name": "helm_tools_included",
+          "description": "Includes helm_ tools since Argo CD manages Helm releases"
+        },
+        {
+          "name": "phase4_complete",
+          "description": "All three Phase 4 targets updated: Chart-template.yaml, values.yaml, Makefile"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want to generate a kagent agent for cert-manager. cncf_project_url: https://cert-manager.io, github_repo_url: https://github.com/cert-manager/cert-manager, default_enabled: true",
+      "expected_output": "Agent slug 'cert-manager', agent name 'cert-manager-agent'. rbac.yaml for cert-manager.io API group covering Certificate, CertificateRequest, Issuer, ClusterIssuer, Order, Challenge resources. System message focuses on certificate lifecycle, renewal troubleshooting, issuer configuration (ACME/Let's Encrypt, self-signed, CA), and secret management.",
+      "assertions": [
+        {
+          "name": "slug_with_hyphen",
+          "description": "Correctly uses kebab-case slug 'cert-manager' and handles it in all file paths"
+        },
+        {
+          "name": "cert_manager_crds_in_rbac",
+          "description": "rbac.yaml covers cert-manager.io CRDs: certificates, issuers, clusterissuers, certificaterequests"
+        },
+        {
+          "name": "rbac_role_naming",
+          "description": "ClusterRole named cert-manager-role (not cert-manager-agent-role)"
+        },
+        {
+          "name": "system_message_grounded",
+          "description": "System message references actual cert-manager CRD kinds and operational tasks from Phase 1 research"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Make a kagent agent for Prometheus. Project URL: https://prometheus.io, GitHub: https://github.com/prometheus/prometheus, enabled by default: yes",
+      "expected_output": "Should stop and ask for clarification — 'yes' is not a valid value for default_enabled. Must ask user to provide 'true' or 'false' before proceeding.",
+      "assertions": [
+        {
+          "name": "stops_for_invalid_argument",
+          "description": "Does NOT proceed to Phase 1 — asks user to clarify default_enabled value"
+        },
+        {
+          "name": "explains_valid_values",
+          "description": "Tells user the valid values are 'true' or 'false'"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Create a kagent agent for OpenTelemetry Collector. cncf_project_url: https://opentelemetry.io, github_repo_url: https://github.com/open-telemetry/opentelemetry-collector, default_enabled: true",
+      "expected_output": "Agent for opentelemetry-collector (or otel-collector slug). Should include RBAC for opentelemetry.io API group (OpenTelemetryCollector, Instrumentation CRDs from the operator). System message covers pipeline configuration, receiver/processor/exporter setup, troubleshooting collector pods, and Kubernetes resource instrumentation.",
+      "assertions": [
+        {
+          "name": "reasonable_slug",
+          "description": "Uses a sensible kebab-case slug (otel-collector or opentelemetry-collector)"
+        },
+        {
+          "name": "rbac_for_otel_crds",
+          "description": "Generates rbac.yaml for opentelemetry.io API group"
+        },
+        {
+          "name": "phase4_makefile",
+          "description": "Makefile helm-agents target updated with correct tab-indented envsubst + helm package lines"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Generate a kagent agent for Crossplane. cncf_project_url: https://www.crossplane.io, github_repo_url: https://github.com/crossplane/crossplane, default_enabled: true",
+      "expected_output": "Agent for Crossplane with RBAC covering crossplane.io and pkg.crossplane.io API groups (Provider, Configuration, Composite Resources, Claims). System message covers provider installation, composite resource definitions (XRDs), compositions, and troubleshooting claim binding.",
+      "assertions": [
+        {
+          "name": "multiple_api_groups_in_rbac",
+          "description": "rbac.yaml covers multiple Crossplane API groups: crossplane.io, pkg.crossplane.io, apiextensions.crossplane.io"
+        },
+        {
+          "name": "no_invented_tools",
+          "description": "Does not invent crossplane_* tool names — uses only real k8s_ and helm_ tools from catalogue"
+        },
+        {
+          "name": "quality_checklist_passed",
+          "description": "All 20 quality checklist items verified before output presented"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Create a kagent agent for Istio. cncf_project_url: https://istio.io, github_repo_url: https://github.com/istio/istio, default_enabled: true",
+      "expected_output": "Istio agent with RBAC for networking.istio.io, security.istio.io API groups. System message covers VirtualService, DestinationRule, Gateway management, mTLS, traffic management, and observability. Should check whether istio_* tools exist in catalogue before including them — if not, use only k8s_ tools.",
+      "assertions": [
+        {
+          "name": "checks_tool_catalogue",
+          "description": "Only includes tools that actually exist in kagent-tool-server (istio_* tools if real, otherwise k8s_ only)"
+        },
+        {
+          "name": "istio_crds_in_rbac",
+          "description": "rbac.yaml covers networking.istio.io and security.istio.io API groups"
+        },
+        {
+          "name": "promptTemplate_before_modelConfig",
+          "description": "In agent.yaml declarative block, promptTemplate appears before modelConfig"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "I want to generate a kagent agent but I only have the GitHub URL: https://github.com/cilium/cilium. I don't have the project URL.",
+      "expected_output": "Should stop and ask for the missing cncf_project_url and default_enabled values before proceeding. Should list all three required arguments with their validation rules and examples.",
+      "assertions": [
+        {
+          "name": "stops_for_missing_args",
+          "description": "Does not proceed to Phase 1 with incomplete arguments"
+        },
+        {
+          "name": "lists_all_missing",
+          "description": "Identifies both cncf_project_url and default_enabled as missing"
+        },
+        {
+          "name": "provides_format_guidance",
+          "description": "Shows the expected format for each missing argument"
+        }
+      ],
+      "files": []
+    }
+  ]
+}
